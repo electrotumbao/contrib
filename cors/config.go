@@ -83,13 +83,6 @@ func generatePreflightHeaders(c Config) http.Header {
 	if c.MaxAge > time.Duration(0) {
 		headers.Set("Access-Control-Max-Age", strconv.FormatInt(int64(c.MaxAge/time.Second), 10))
 	}
-	var origin string
-	if c.AllowAllOrigins {
-		origin = "*"
-	} else {
-		origin = strings.Join(c.AllowedOrigins, ", ")
-	}
-	headers.Set("Access-Control-Allow-Origin", origin)
 	return headers
 }
 

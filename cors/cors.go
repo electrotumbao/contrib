@@ -107,7 +107,7 @@ func New(config Config) gin.HandlerFunc {
 		origin, valid := s.validateOrigin(origin)
 		if valid {
 			if c.Request.Method == "OPTIONS" {
-				valid = handlePreflight(c, s)
+				valid = handlePreflight(c, s, origin)
 			} else {
 				valid = handleNormal(c, s)
 			}
@@ -123,7 +123,7 @@ func New(config Config) gin.HandlerFunc {
 	}
 }
 
-func handlePreflight(c *gin.Context, s *settings) bool {
+func handlePreflight(c *gin.Context, s *settings, origin string) bool {
 	defer c.AbortWithStatus(200)
 	if !s.validateMethod(c.Request.Header.Get("Access-Control-Request-Method")) {
 		return false
@@ -134,6 +134,7 @@ func handlePreflight(c *gin.Context, s *settings) bool {
 	for key, value := range s.preflightHeaders {
 		c.Writer.Header()[key] = value
 	}
+	c.Header("Access-Control-Allow-Origin", origin)
 	return true
 }
 
